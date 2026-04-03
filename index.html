@@ -1056,7 +1056,9 @@ const esMismoDia = (timestamp) => {
            fechaGuardada.getFullYear() === hoy.getFullYear();
 };
 
-// Dentro del DOMContentLoaded, reemplaza la parte del splash por esta:
+/* ══════════════════════════════════════════════════
+   LÓGICA DE RESET DIARIO (Solo JS)
+══════════════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded',()=>{
   initBg();
   initSplashEmojis();
@@ -1070,9 +1072,16 @@ window.addEventListener('DOMContentLoaded',()=>{
     fill.style.width=p+'%';
   },180);
 
+  // 1. Obtenemos lo guardado
   const lsPlay = lsGet();
-  // NUEVA LÓGICA: Solo bloqueamos si jugó HOY
-  const yaJugoHoy = lsPlay && esMismoDia(lsPlay.ts);
+  let yaJugoHoy = false;
+
+  // 2. Comparamos fechas: ¿El premio guardado es de HOY?
+  if (lsPlay && lsPlay.ts) {
+    const fechaPremio = new Date(lsPlay.ts).toDateString();
+    const hoy = new Date().toDateString();
+    yaJugoHoy = (fechaPremio === hoy);
+  }
 
   setTimeout(()=>{
     clearInterval(iv); fill.style.width='100%';
@@ -1080,15 +1089,15 @@ window.addEventListener('DOMContentLoaded',()=>{
       $('splash').classList.add('out');
       setTimeout(()=>{
         $('splash').style.display='none';
-        
+
+        // 3. Si ya jugó HOY, bloqueamos. Si es otro día, lo dejamos pasar.
         if(yaJugoHoy){
-          // Si ya jugó hoy, mostramos el bloqueo con su premio anterior
-          showBlocked(lsPlay.premio, lsPlay.ts); 
+          $('sbPrevPrize').textContent = lsPlay.premio;
+          $('screenBlocked').classList.add('show');
         } else {
-          // Si no jugó hoy (o es otro día), permitimos jugar
           gameEnabled = true;
         }
-        
+
         if(!audioMuted) SFX.bg.play().catch(()=>{});
       },950);
     },500);
