@@ -980,7 +980,7 @@ const eob= t=>{ const c=1.70158,c3=c+1; return 1+c3*Math.pow(t-1,3)+c*Math.pow(t
 /* ══════════════════════════════════════════════════
    GLOBALS
 ══════════════════════════════════════════════════ */
-let gameEnabled=true;
+let gameEnabled=false;
 
 /* ══════════════════════════════════════════════════
    SCREENS
@@ -1072,11 +1072,10 @@ window.addEventListener('DOMContentLoaded',()=>{
     fill.style.width=p+'%';
   },180);
 
-  // 1. Obtenemos lo guardado
+  // 2. LÓGICA DE VALIDACIÓN INMEDIATA
   const lsPlay = lsGet();
   let yaJugoHoy = false;
 
-  // 2. Comparamos fechas: ¿El premio guardado es de HOY?
   if (lsPlay && lsPlay.ts) {
     const fechaPremio = new Date(lsPlay.ts).toDateString();
     const hoy = new Date().toDateString();
@@ -1090,12 +1089,14 @@ window.addEventListener('DOMContentLoaded',()=>{
       setTimeout(()=>{
         $('splash').style.display='none';
 
-        // 3. Si ya jugó HOY, bloqueamos. Si es otro día, lo dejamos pasar.
+        // 3. DECISIÓN FINAL
         if(yaJugoHoy){
+          // Si ya jugó hoy, mostramos el cartel y NUNCA habilitamos gameEnabled
           $('sbPrevPrize').textContent = lsPlay.premio;
           $('screenBlocked').classList.add('show');
         } else {
-          gameEnabled = true;
+          // SOLO si es un día nuevo, permitimos el click
+          gameEnabled = true; 
         }
 
         if(!audioMuted) SFX.bg.play().catch(()=>{});
