@@ -1045,6 +1045,18 @@ function showReward(prize){
 /* ══════════════════════════════════════════════════
    INIT
 ══════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════
+   LÓGICA DE REFRESCO DIARIO
+══════════════════════════════════════════════════ */
+const esMismoDia = (timestamp) => {
+    const fechaGuardada = new Date(timestamp);
+    const hoy = new Date();
+    return fechaGuardada.getDate() === hoy.getDate() &&
+           fechaGuardada.getMonth() === hoy.getMonth() &&
+           fechaGuardada.getFullYear() === hoy.getFullYear();
+};
+
+// Dentro del DOMContentLoaded, reemplaza la parte del splash por esta:
 window.addEventListener('DOMContentLoaded',()=>{
   initBg();
   initSplashEmojis();
@@ -1058,7 +1070,9 @@ window.addEventListener('DOMContentLoaded',()=>{
     fill.style.width=p+'%';
   },180);
 
-  const lsPlay=lsGet();
+  const lsPlay = lsGet();
+  // NUEVA LÓGICA: Solo bloqueamos si jugó HOY
+  const yaJugoHoy = lsPlay && esMismoDia(lsPlay.ts);
 
   setTimeout(()=>{
     clearInterval(iv); fill.style.width='100%';
@@ -1066,10 +1080,15 @@ window.addEventListener('DOMContentLoaded',()=>{
       $('splash').classList.add('out');
       setTimeout(()=>{
         $('splash').style.display='none';
-        if(lsPlay){
-          showBlocked(lsPlay.premio);
+        
+        if(yaJugoHoy){
+          // Si ya jugó hoy, mostramos el bloqueo con su premio anterior
+          showBlocked(lsPlay.premio, lsPlay.ts); 
+        } else {
+          // Si no jugó hoy (o es otro día), permitimos jugar
+          gameEnabled = true;
         }
-        // else → go straight to game, no username screen
+        
         if(!audioMuted) SFX.bg.play().catch(()=>{});
       },950);
     },500);
