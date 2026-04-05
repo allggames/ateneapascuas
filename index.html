@@ -755,12 +755,12 @@ const lsSet = (_u,p) => { try{ localStorage.setItem(LS_KEY,JSON.stringify({premi
    PREMIOS — 3 huevos, cada uno con un premio random
 ══════════════════════════════════════════════════ */
 const PRIZES=[
-  {label:'50%',  icon:'🥚', sub:'de bonificación', w:30},
-  {label:'100%', icon:'🐣', sub:'de bonificación', w:30},
-  {label:'150%', icon:'🌟', sub:'de bonificación', w:22},
-  {label:'200%', icon:'💎', sub:'de bonificación', w:12},
-  {label:'Regalo Sorpresa', icon:'🎁', sub:'', special:true, w:3},
-  {label:'Bono a Elección', icon:'🎟️', sub:'', special:true, w:3},
+  {label:'1000 FICHAS',  icon:'🐣', sub:'de bonificación', w:3},
+  {label:'100%', icon:'🥚', sub:'de bonificación', w:35},
+  {label:'150%', icon:'🌟', sub:'de bonificación', w:30},
+  {label:'200%', icon:'💎', sub:'de bonificación', w:22},
+  {label:'Regalo Sorpresa', icon:'🎁', sub:'', special:true, w:5},
+  {label:'Bono a Elección', icon:'🎟️', sub:'', special:true, w:5},
 ];
 const pickPrize=()=>{
   const tot=PRIZES.reduce((s,p)=>s+p.w,0); let r=Math.random()*tot;
